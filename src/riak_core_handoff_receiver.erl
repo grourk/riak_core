@@ -50,7 +50,8 @@ handle_call({set_socket, Socket}, _From, State) ->
     inet:setopts(Socket, [{active, once}, {packet, 4}, {header, 1}]),
     {reply, ok, State#state { sock = Socket }}.
 
-handle_info({tcp_closed,_Socket},State=#state{partition=Partition,count=Count}) ->
+handle_info({tcp_closed,_Socket},State=#state{partition=Partition,count=Count,vnode=VNode}) ->
+    gen_fsm:sync_send_all_state_event(VNode, handoff_received, 60000),
     error_logger:info_msg("Handoff receiver for partition ~p exiting after processing ~p"
                           " objects~n", [Partition, Count]),
     {stop, normal, State};
