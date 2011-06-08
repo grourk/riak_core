@@ -314,6 +314,8 @@ find_biggest_hole(Mine) ->
                 lists:zip(Mine, tl(Mine)++[hd(Mine)])).
 
 claim_rebalance_n(Ring, Node) ->
+    error_logger:error_msg("claim_rebalance_n!  Node=~p", [Node]),
+
     %% diagonal stripes guarantee most disperse data
     Nodes = lists:usort([Node|riak_core_ring:all_members(Ring)]),
     Partitions = lists:sort([ I || {I, _} <- riak_core_ring:all_owners(Ring) ]),
