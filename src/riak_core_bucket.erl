@@ -79,7 +79,8 @@ get_bucket(Name, Ring) ->
     case riak_core_ring:get_meta({bucket, Name}, Ring) of
         undefined ->
             [{name, Name}
-             |app_helper:get_env(riak_core, default_bucket_props)];
+             | app_helper:get_env(riak_core, default_bucket_props) 
+             ++ app_helper:get_env(riak_core, list_to_atom("default_bucket_props_" ++ [hd(binary_to_list(Name))]), [])];
         {ok, Bucket} -> Bucket
     end.
 
